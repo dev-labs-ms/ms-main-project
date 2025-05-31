@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  service_auth_user:
+    image: daffa4lif/service-user-auth
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./services/auth-user/.env
+    volumes:
+      - ./services/auth-user/keys:/app/keys
