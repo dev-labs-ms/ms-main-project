@@ -1,11 +1,24 @@
 version: "3.8"
 
 services:
+  gateway_api:
+    image: krakend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./gateway/krakend.json:/etc/krakend/krakend.json
+    networks:
+      - service
+
   service_auth_user:
     image: daffa4lif/service-user-auth
-    ports:
-      - "8000:8000"
+    container_name: service-user-auth
     env_file:
       - ./services/auth-user/.env
     volumes:
       - ./services/auth-user/keys:/app/keys
+    networks:
+      - service
+
+networks:
+  service:
