@@ -7,7 +7,15 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./gateway/krakend.json:/etc/krakend/krakend.json
+      - .:/etc/krakend
+    environment:
+      - FC_ENABLE=1
+      - FC_SETTINGS=gateway/config/settings/staging
+      - FC_PARTIALS=gateway/config/partials
+      - FC_TEMPLATES=gateway/config/templates
+      - FC_OUT=gateway/out.json
+      - SERVICE_NAME=KrakenD API Gateway
+    command: ["run", "-dc", "gateway/krakend.tmpl", ""]
     networks:
       - service
 
