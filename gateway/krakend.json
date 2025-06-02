@@ -1,0 +1,100 @@
+{
+  "$schema": "https://www.krakend.io/schema/v2.10/krakend.json",
+  "version": 3,
+  "name": "Main API Gateway",
+  "output_encoding": "no-op",
+  "extra_config": {
+    "router": {
+      "return_error_msg": true
+    },
+    "telemetry/logging": {
+      "level": "INFO",
+      "prefix": "[KRAKEND]",
+      "syslog": false,
+      "stdout": true
+    }
+  },
+  "endpoints": [
+    {
+      "endpoint": "/api/auth/login",
+      "method": "POST",
+      "input_headers": ["*"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/auth/login",
+          "method": "POST",
+          "host": ["http://service-user-auth:8000"],
+          "extra_config": {
+            "backend/http": {
+              "return_error_code": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/auth/register",
+      "method": "POST",
+      "backend": [
+        {
+          "url_pattern": "/api/v1/auth/register",
+          "method": "POST",
+          "host": ["host.docker.internal:3000"],
+          "extra_config": {
+            "backend/http": {
+              "return_error_code": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/auth/token/refresh",
+      "input_headers": ["Cookie"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/auth/token/refresh",
+          "method": "GET",
+          "host": ["http://service-user-auth:8000"],
+          "extra_config": {
+            "backend/http": {
+              "return_error_code": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/user/profile",
+      "input_headers": ["Authorization", "User-Agent"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/user/profile",
+          "host": ["host.docker.internal:3000"],
+          "extra_config": {
+            "backend/http": {
+              "return_error_code": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/user/profile",
+      "method": "PUT",
+      "input_headers": ["Authorization", "User-Agent"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/user/profile",
+          "method": "PUT",
+          "host": ["host.docker.internal:3000"],
+          "extra_config": {
+            "backend/http": {
+              "return_error_code": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
